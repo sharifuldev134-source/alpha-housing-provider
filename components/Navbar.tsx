@@ -14,6 +14,7 @@ interface NavbarProps {
 export function Navbar({ onOpenPlanModal, onOpenProviderModal }: NavbarProps) {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const isProvidersPage = pathname === "/providers";
 
   const navLinks = [
     { label: "For Students & Parents", href: "/for-students-and-parents" },
@@ -47,37 +48,61 @@ export function Navbar({ onOpenPlanModal, onOpenProviderModal }: NavbarProps) {
               </Link>
             );
           })}
+
+          {/* Providers link in navbar on providers page */}
+          {isProvidersPage && (
+            <Link
+              href="/providers"
+              className="relative py-1.5 text-[#E11D48] font-semibold"
+            >
+              Providers
+              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#E11D48] rounded-full" />
+            </Link>
+          )}
         </nav>
 
         {/* Desktop CTA Buttons */}
-        <div className="hidden md:flex items-center space-x-3.5">
-          <Link
-            href="/providers"
-            onClick={(e) => {
-              if (onOpenProviderModal) {
-                e.preventDefault();
-                onOpenProviderModal();
-              }
-            }}
-            className="px-4 py-2 text-sm font-semibold text-[#E11D48] border border-[#E11D48]/30 rounded-full hover:bg-red-50/70 hover:border-[#E11D48] transition-all duration-200"
-          >
-            Providers
-          </Link>
-          <button
-            onClick={onOpenPlanModal}
-            className="px-5 py-2 text-sm font-semibold text-white bg-[#E11D48] hover:bg-[#c9183d] rounded-full shadow-sm hover:shadow-md transition-all duration-200 flex items-center gap-1.5 cursor-pointer active:scale-95"
-          >
-            Start Housing Plan
-          </button>
+        <div className="hidden md:flex items-center space-x-3">
+          {isProvidersPage ? (
+            <>
+              <button
+                onClick={onOpenProviderModal}
+                className="px-4 py-2 text-sm font-semibold text-[#E11D48] border border-[#E11D48]/30 rounded-full hover:bg-red-50/70 hover:border-[#E11D48] transition-all duration-200 cursor-pointer"
+              >
+                Log in
+              </button>
+              <button
+                onClick={onOpenProviderModal}
+                className="px-5 py-2 text-sm font-semibold text-white bg-[#E11D48] hover:bg-[#c9183d] rounded-full shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer active:scale-95"
+              >
+                Join as a Provider
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/providers"
+                className="px-4 py-2 text-sm font-semibold text-[#E11D48] border border-[#E11D48]/30 rounded-full hover:bg-red-50/70 hover:border-[#E11D48] transition-all duration-200"
+              >
+                Providers
+              </Link>
+              <button
+                onClick={onOpenPlanModal}
+                className="px-5 py-2 text-sm font-semibold text-white bg-[#E11D48] hover:bg-[#c9183d] rounded-full shadow-sm hover:shadow-md transition-all duration-200 flex items-center gap-1.5 cursor-pointer active:scale-95"
+              >
+                Start Housing Plan
+              </button>
+            </>
+          )}
         </div>
 
         {/* Mobile menu button */}
         <div className="flex md:hidden items-center space-x-2">
           <button
-            onClick={onOpenPlanModal}
+            onClick={isProvidersPage ? onOpenProviderModal : onOpenPlanModal}
             className="px-3 py-1.5 text-xs font-semibold text-white bg-[#E11D48] rounded-full"
           >
-            Plan
+            {isProvidersPage ? "Join" : "Plan"}
           </button>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -110,16 +135,29 @@ export function Navbar({ onOpenPlanModal, onOpenProviderModal }: NavbarProps) {
                 </Link>
               );
             })}
-          </div>
-
-          <div className="pt-3 border-t border-slate-100 flex flex-col gap-2.5">
             <Link
               href="/providers"
               onClick={() => setMobileMenuOpen(false)}
+              className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                isProvidersPage
+                  ? "bg-red-50 text-[#E11D48] font-semibold"
+                  : "text-slate-700 hover:bg-slate-50"
+              }`}
+            >
+              Providers
+            </Link>
+          </div>
+
+          <div className="pt-3 border-t border-slate-100 flex flex-col gap-2.5">
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                if (onOpenProviderModal) onOpenProviderModal();
+              }}
               className="w-full py-2.5 text-center text-sm font-semibold text-[#E11D48] border border-[#E11D48]/30 rounded-xl hover:bg-red-50"
             >
-              Housing Providers Portal
-            </Link>
+              Join as a Provider
+            </button>
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
